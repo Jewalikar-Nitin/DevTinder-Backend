@@ -1,0 +1,14 @@
+{
+  "name": "devtinderbe",
+  "version": "1.0.0",
+  "description": "This dev Tinder Backend using Node express.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nitin Jewalikar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
