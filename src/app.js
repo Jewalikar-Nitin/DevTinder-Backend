@@ -1,15 +1,30 @@
 const express = require('express');
 const app = express();
+const {adminAuth , userAuth} = require("./middlewares/auth")
+const connectDB = require('./config/database')
+const User = require('./model/userModel')
 
-app.use("/home",(req,res)=>{
-    res.send('Home logged in')
-});
-
-app.use("/dashboard",(req, res)=>{
-        res.send('Loading dashboard')
+connectDB()
+  .then(() => {
+    console.log("Connected DB successfully");
+    app.listen(7777,()=>{
+    console.log('server listening on port 7777.');
 })
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
+app.use(express.json());
 
-app.listen(3000,()=>{
-    console.log('server listening');
+app.use('/signup',async(req,res)=>{
+  console.log('sign up', req.body)
+    const user = new User(req.body);
+    try{
+      await user.save();
+      res.send('User saved successfully');
+    }catch(err){
+      console.log(user);
+      res.status(500).send('Internal server error!!')
+    }
 })
