@@ -28,4 +28,8 @@ function updateUserValidator(req) {
   if (data.skills.length > 10) throw new Error("10 skills allwoed only");
 }
 
-module.exports = {signupValidator, updateUserValidator}
+function loginValidator(req){
+  if(!validator.isEmail(req.body.emailID)) throw new Error("Enter a valid email ID")
+}
+
+module.exports = {signupValidator, updateUserValidator, loginValidator}

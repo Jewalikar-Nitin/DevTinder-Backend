@@ -3,8 +3,11 @@ const app = express();
 const { adminAuth, userAuth } = require("./middlewares/auth");
 const connectDB = require("./config/database");
 const User = require("./model/userModel");
-const { signupValidator, updateUserValidator } = require("./utils/validate");
+const { signupValidator, updateUserValidator, loginValidator } = require("./utils/validate");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+
 
 connectDB()
   .then(() => {
@@ -18,11 +21,13 @@ connectDB()
   });
 
 app.use(express.json());
+app.use(cookieParser());
 
+//Sign up 
 app.post("/signup", async (req, res) => {
   try {
     signupValidator(req);
-    const { firstName, lastName, emailID, password } = req.body;
+    const { firstName, lastName, emailID, password, gender } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -30,6 +35,7 @@ app.post("/signup", async (req, res) => {
       lastName,
       emailID,
       password: hashedPassword,
+      gender
     });
     await user.save();
     res.send("User saved successfully");
@@ -37,6 +43,51 @@ app.post("/signup", async (req, res) => {
     res.status(500).send("Internal server error!!" + err);
   }
 });
+
+//Login 
+app.post("/login",async (req,res)=>{
+  try {
+    loginValidator(req);
+    const {emailID, password} = req.body;
+    const user = await User.findOne({emailID:emailID});
+        
+    if(!user){
+      throw new Error("Invalid credentials");
+    }
+    const isValidPassword = await user.validatePassword(password);
+
+    if(!isValidPassword) {
+      throw new Error("Invalid credentials");
+    }
+    const token = await user.getJWT();
+    res.cookie('token',token,{expires:new Date(Date.now() + 8 * 3600000)});
+    res.send("Login successful!!");
+
+  } catch (err) {
+    res.status(400).send("error"+err);
+  }
+})
+
+//Profile
+app.get("/profile",async(req,res)=>{
+  try{
+    const token = req.cookies.token;
+    if(!token){
+      res.status(401).send("Unauthorized");
+    }
+
+    const decoded = await jwt.verify(token,'User@3421$');
+    const {_id} = decoded;
+
+    const user = await User.findOne({_id:_id});
+    if(!user){
+      res.status(404).send("User not found!!");
+    }
+    res.send(user);
+  }catch(err){
+    res.status(400).send("error"+err);
+  }
+})
 
 // Get user by ID
 app.get("/user/:id", async (req, res) => {
