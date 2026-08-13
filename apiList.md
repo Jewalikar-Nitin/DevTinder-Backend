@@ -7,13 +7,14 @@
 
 ## Profile
 - GET /profile/view
-- POST /profile/update
+- PATCH /profile/update
+- PATCH /profile/password    // update password
 
 ## Request
 - POST /request/send/interested/:userId
 - POST /request/send/ignored/:userId
-- POST /request/review/accepted/:userId
-- POST /request/review/rejected/:userId
+- POST /request/review/accepted/:requestID
+- POST /request/review/rejected/:requestID
 
 ## User
 - GET user/requests
