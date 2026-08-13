@@ -11,8 +11,7 @@
 - PATCH /profile/password    // update password
 
 ## Request
-- POST /request/send/interested/:userId
-- POST /request/send/ignored/:userId
+- POST /request/send/:status/:userId
 - POST /request/review/accepted/:requestID
 - POST /request/review/rejected/:requestID
 
