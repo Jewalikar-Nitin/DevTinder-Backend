@@ -12,8 +12,8 @@
 
 ## Request
 - POST /request/send/:status/:userId
-- POST /request/review/accepted/:requestID
-- POST /request/review/rejected/:requestID
+- POST /request/review/:status/:requestID
+- 
 
 ## User
 - GET user/requests

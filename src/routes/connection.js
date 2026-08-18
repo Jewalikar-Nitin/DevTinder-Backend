@@ -40,4 +40,29 @@ connnectionRouter.post(
   },
 );
 
+connnectionRouter.post("/request/review/:status/:requestID",userAuth,async(req,res)=>{
+  try {
+    const userId = req.user._id;
+    const {status,requestID} = req.params;
+    const allowedStatus = ["accepted","rejected"];
+
+    if(!allowedStatus.includes(status)) throw new Error(`${status} status not allowed`);
+
+    const connectionRequest = await ConnectionRequest.findOne({
+      _id:requestID,
+      toUserId:userId,
+      status:"interested"
+    }) 
+
+    if(!connectionRequest) throw new Error ("Request not found");
+    
+    connectionRequest.status =status;
+    const requestData = await connectionRequest.save(); 
+    res.send(`Request ${status} successfully!!`);
+
+  } catch (err) {
+    res.status(400).send("Error "+err.message);
+  }
+})
+
 module.exports = connnectionRouter;
