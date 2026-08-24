@@ -16,7 +16,7 @@
 - 
 
 ## User
-- GET user/requests
+- GET user/requests/received
 - GET user/connections
 - GET user/feed
 

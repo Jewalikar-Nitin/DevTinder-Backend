@@ -9,20 +9,25 @@ const authRouter = express.Router();
 authRouter.post("/signup", async (req, res) => {
   try {
     signupValidator(req);
-    const { firstName, lastName, emailID, password, gender } = req.body;
+    const { firstName, lastName, emailID, password, gender, skills, about, photoURL } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const existingUser = User.find({emailID : emailID});
+    if(existingUser) throw new Error (`User with ${emailID} already exist`);
 
     const user = new User({
       firstName,
       lastName,
       emailID,
       password: hashedPassword,
-      gender
+      gender,
+      skills,
+      about
     });
     await user.save();
     res.send("User saved successfully");
   } catch (err) {
-    res.status(500).send("Internal server error!!" + err);
+    res.status(500).send("Error!! " + err.message);
   }
 });
 
