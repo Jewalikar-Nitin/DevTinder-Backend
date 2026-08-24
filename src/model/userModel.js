@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
     type: String,
     trim: true,
     required: true,
+    index:true,
     minLength: 2,
     maxLength: 20
   },
@@ -41,7 +42,6 @@ const userSchema = mongoose.Schema({
   gender: {
     type: String,
     validate(value){
-      console.log('validator runnninggg ', !['male','female','other'].includes(value))
       if(!['male','female','other'].includes(value)){
         throw new Error('Gender data is not valid');
       }
@@ -56,7 +56,7 @@ const userSchema = mongoose.Schema({
   },
   about: {
     type: String,
-    default:"Developer"
+    default:"This is default about user!!"
   },
   photoURL: {
     type: String,

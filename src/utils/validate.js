@@ -21,15 +21,55 @@ function signupValidator(req) {
 function updateUserValidator(req) {
   const ALLOWED_DATA = ["lastName", "skills", "photoURL", "about"];
 
-  const isAllowed = Object.keys(data).every((k) => ALLOWED_DATA.includes(k));
+  const isAllowed = Object.keys(req.body).every((k) => ALLOWED_DATA.includes(k));
 
   if (!isAllowed) throw new Error("Not allowed data");
 
   if (data.skills.length > 10) throw new Error("10 skills allwoed only");
+
 }
 
-function loginValidator(req){
-  if(!validator.isEmail(req.body.emailID)) throw new Error("Enter a valid email ID")
+function loginValidator(req) {
+  if (!validator.isEmail(req.body.emailID))
+    throw new Error("Enter a valid email ID");
 }
 
-module.exports = {signupValidator, updateUserValidator, loginValidator}
+function profileUpdateValidator(req) {
+  const ALLOWED_DATA = [
+    "age",
+    "firstName",
+    "lastName",
+    "skills",
+    "photoURL",
+    "about",
+  ];
+  let data = req.body;
+  const isAllowed = Object.keys(data).every((k) => ALLOWED_DATA.includes(k));
+
+  if (!isAllowed) throw new Error("Not allowed data");
+  if (data.skills.length > 10) throw new Error("10 skills allwoed only");
+
+  return true;
+}
+
+function updatePasswordValidator(req){
+
+  const ALLOWED_DATA = [
+    "password",
+    "newPassword"
+  ];
+  let data = req.body;
+  const isAllowed = Object.keys(data).every((k) => ALLOWED_DATA.includes(k));
+  if (!isAllowed) throw new Error("Not allowed data");
+  if(!validator.isStrongPassword(data.newPassword)){
+    throw new Error("Enter a strong password");
+  }
+}
+
+module.exports = {
+  signupValidator,
+  updateUserValidator,
+  loginValidator,
+  profileUpdateValidator,
+  updatePasswordValidator
+};
